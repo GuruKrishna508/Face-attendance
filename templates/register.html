@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card" style="max-width:620px;margin:auto">
+  <h2>➕ Register New Face</h2>
+
+  <!-- ── METHOD 1: Upload a photo (most reliable) ───────────────── -->
+  <div style="background:rgba(74,222,128,0.1);border:2px solid #4ade80;border-radius:12px;padding:1.2rem;margin-bottom:1.5rem">
+    <h3 style="color:#4ade80;margin-bottom:.5rem">📁 Option 1: Upload a Photo (Recommended)</h3>
+    <p style="color:#94a3b8;font-size:.9rem;margin-bottom:1rem">
+      Take a photo with your phone or use any existing photo. Works 100% reliably.
+    </p>
+    <form method="POST" enctype="multipart/form-data" id="upload-form">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="e.g. John Doe" required class="form-control"/>
+      </div>
+      <div class="form-group">
+        <label>Photo (JPG or PNG, face clearly visible)</label>
+        <input type="file" name="photo_file" accept="image/*" required class="form-control"
+               style="padding:.5rem" onchange="previewUpload(this)"/>
+      </div>
+      <img id="upload-preview" style="display:none;width:100%;border-radius:10px;margin-bottom:1rem;border:2px solid #4ade80"/>
+      <button type="submit" class="btn btn-success" style="width:100%">✅ Register with Photo</button>
+    </form>
+  </div>
+
+  <!-- ── METHOD 2: Webcam (may have issues on some systems) ────── -->
+  <div style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.3);border-radius:12px;padding:1.2rem">
+    <h3 style="color:#a78bfa;margin-bottom:.5rem">📷 Option 2: Use Webcam</h3>
+    <p style="color:#94a3b8;font-size:.9rem;margin-bottom:1rem">
+      Capture directly from your webcam. If this doesn't work, use Option 1 above.
+    </p>
+
+    <div class="camera-container" style="margin-bottom:1rem">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas" style="display:none"></canvas>
+      <div class="camera-overlay"><div class="face-guide"></div></div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="webcam-form">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="name" id="webcam-name" placeholder="e.g. John Doe" required class="form-control"/>
+      </div>
+      <input type="hidden" name="image_data" id="image-data"/>
+      <div class="btn-row">
+        <button type="button" id="capture-btn" class="btn btn-primary">📸 Capture</button>
+        <button type="submit" id="submit-btn" class="btn btn-success" disabled>✅ Register</button>
+      </div>
+    </form>
+
+    <img id="webcam-preview" style="display:none;width:100%;border-radius:10px;margin-top:1rem;border:2px solid #a78bfa"/>
+  </div>
+</div>
+
+<script>
+// ── Preview uploaded file ────────────────────────────────────────
+function previewUpload(input) {
+  const preview = document.getElementById('upload-preview');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// ── Webcam ───────────────────────────────────────────────────────
+const video      = document.getElementById('video');
+const canvas     = document.getElementById('canvas');
+const captureBtn = document.getElementById('capture-btn');
+const submitBtn  = document.getElementById('submit-btn');
+const imageData  = document.getElementById('image-data');
+const preview    = document.getElementById('webcam-preview');
+
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => { video.srcObject = stream; })
+  .catch(err => {
+    document.getElementById('video').style.display = 'none';
+    console.warn('Webcam not available:', err.message);
+  });
+
+captureBtn.addEventListener('click', () => {
+  canvas.width  = video.videoWidth  || 640;
+  canvas.height = video.videoHeight || 480;
+  const ctx = canvas.getContext('2d', { alpha: false });
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(video, 0, 0);
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+  imageData.value = dataUrl;
+  preview.src = dataUrl;
+  preview.style.display = 'block';
+  submitBtn.disabled = false;
+  captureBtn.textContent = '🔄 Retake';
+});
+</script>
+{% endblock %}

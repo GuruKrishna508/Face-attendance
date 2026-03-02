@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card" style="max-width:680px;margin:auto">
+  <h2>📸 Mark Attendance</h2>
+
+  <!-- ── METHOD 1: Upload Photo ────────────────────────────────── -->
+  <div style="background:rgba(74,222,128,0.1);border:2px solid #4ade80;border-radius:12px;padding:1.2rem;margin-bottom:1.5rem">
+    <h3 style="color:#4ade80;margin-bottom:.5rem">📁 Option 1: Upload a Photo (Recommended)</h3>
+    <div class="form-group" style="margin-top:.8rem">
+      <input type="file" id="upload-file" accept="image/*" class="form-control" style="padding:.5rem"/>
+    </div>
+    <img id="upload-preview" style="display:none;width:100%;border-radius:10px;margin:1rem 0;border:2px solid #4ade80"/>
+    <button id="upload-scan-btn" class="btn btn-success" style="width:100%">🔍 Scan Uploaded Photo</button>
+  </div>
+
+  <!-- ── METHOD 2: Webcam ──────────────────────────────────────── -->
+  <div style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.3);border-radius:12px;padding:1.2rem">
+    <h3 style="color:#a78bfa;margin-bottom:.5rem">📷 Option 2: Webcam</h3>
+    <div class="camera-container" style="margin-bottom:1rem">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas" style="display:none"></canvas>
+      <div class="camera-overlay"><div class="face-guide"></div></div>
+    </div>
+    <button id="scan-btn" class="btn btn-primary" style="width:100%">🔍 Scan Webcam</button>
+  </div>
+
+  <div id="loading" style="display:none;text-align:center;padding:1.5rem">
+    <div class="spinner"></div><p>Recognizing face...</p>
+  </div>
+  <div id="results" style="margin-top:1rem"></div>
+</div>
+
+<script>
+const loading = document.getElementById('loading');
+const results = document.getElementById('results');
+
+// ── shared: send FormData to server ─────────────────────────────
+async function scanFormData(formData) {
+  loading.style.display = 'block';
+  results.innerHTML = '';
+  try {
+    const res  = await fetch('/process_attendance', { method: 'POST', body: formData });
+    const data = await res.json();
+    loading.style.display = 'none';
+    if (data.status === 'success') {
+      let html = '<div class="results-list">';
+      data.results.forEach(r => {
+        if (r.name === 'Unknown')
+          html += `<div class="result-card result-unknown">❓ Unknown Face</div>`;
+        else if (r.marked)
+          html += `<div class="result-card result-success">✅ <strong>${r.name}</strong> — Marked! (${r.confidence}%)</div>`;
+        else
+          html += `<div class="result-card result-info">ℹ️ <strong>${r.name}</strong> — Already marked today</div>`;
+      });
+      results.innerHTML = html + '</div>';
+    } else {
+      results.innerHTML = `<div class="result-card result-error">⚠️ ${data.message}</div>`;
+    }
+  } catch(e) {
+    loading.style.display = 'none';
+    results.innerHTML = `<div class="result-card result-error">❌ ${e.message}</div>`;
+  }
+}
+
+// ── Option 1: file upload ────────────────────────────────────────
+const uploadFile = document.getElementById('upload-file');
+const uploadPreview = document.getElementById('upload-preview');
+
+uploadFile.addEventListener('change', () => {
+  if (uploadFile.files[0]) {
+    uploadPreview.src = URL.createObjectURL(uploadFile.files[0]);
+    uploadPreview.style.display = 'block';
+  }
+});
+
+document.getElementById('upload-scan-btn').addEventListener('click', () => {
+  if (!uploadFile.files[0]) { alert('Please select a photo first.'); return; }
+  const fd = new FormData();
+  fd.append('photo_file', uploadFile.files[0]);
+  scanFormData(fd);
+});
+
+// ── Option 2: webcam ─────────────────────────────────────────────
+const video  = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(s => { video.srcObject = s; })
+  .catch(e => { video.style.display='none'; });
+
+document.getElementById('scan-btn').addEventListener('click', () => {
+  canvas.width  = video.videoWidth  || 640;
+  canvas.height = video.videoHeight || 480;
+  const ctx = canvas.getContext('2d', { alpha: false });
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(video, 0, 0);
+  const fd = new FormData();
+  fd.append('image_data', canvas.toDataURL('image/jpeg', 0.95));
+  scanFormData(fd);
+});
+</script>
+{% endblock %}

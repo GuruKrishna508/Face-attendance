@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+    <h2>📋 Attendance Records</h2>
+    <a href="/download_csv" class="btn btn-primary">⬇️ Download CSV</a>
+  </div>
+
+  {% if records %}
+  <div style="margin:1rem 0">
+    <input type="text" id="search" placeholder="🔍 Search by name or date..." class="form-control" oninput="filterTable()"/>
+  </div>
+  <table class="table" id="records-table">
+    <thead>
+      <tr><th>#</th><th>Name</th><th>Date</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      {% for i, row in records|enumerate %}
+      <tr>
+        <td>{{ i+1 }}</td>
+        <td>{{ row[0].replace('_', ' ') if row|length > 0 else '' }}</td>
+        <td>{{ row[1] if row|length > 1 else '' }}</td>
+        <td>{{ row[2] if row|length > 2 else '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p style="color:#888;margin-top:.5rem">Total: {{ records|length }} records</p>
+  {% else %}
+  <div style="text-align:center;padding:3rem;color:#888">
+    <div style="font-size:4rem">📭</div>
+    <p>No attendance records yet. <a href="{{ url_for('take_attendance') }}">Mark attendance</a> to get started.</p>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+function filterTable() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('#records-table tbody tr').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

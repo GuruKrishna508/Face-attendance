@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="hero">
+  <h1>👁️ Face Recognition Attendance System</h1>
+  <p>Automatically mark attendance using AI-powered facial recognition</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-number">{{ users|length }}</div>
+    <div class="stat-label">Registered Users</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ today_attendance|length }}</div>
+    <div class="stat-label">Present Today</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ today }}</div>
+    <div class="stat-label">Today's Date</div>
+  </div>
+</div>
+
+<div class="actions-grid">
+  <a href="{{ url_for('register') }}" class="action-card">
+    <div class="action-icon">➕</div>
+    <h3>Register Face</h3>
+    <p>Add a new person to the system by capturing their face</p>
+  </a>
+  <a href="{{ url_for('take_attendance') }}" class="action-card">
+    <div class="action-icon">📸</div>
+    <h3>Mark Attendance</h3>
+    <p>Use your camera to automatically mark attendance</p>
+  </a>
+  <a href="{{ url_for('attendance_records') }}" class="action-card">
+    <div class="action-icon">📋</div>
+    <h3>View Records</h3>
+    <p>Browse all attendance records and export data</p>
+  </a>
+</div>
+
+{% if users %}
+<div class="card">
+  <h2>📌 Registered Users</h2>
+  <div class="users-grid">
+    {% for user in users %}
+    <div class="user-chip">
+      <span>👤 {{ user.replace('_', ' ') }}</span>
+      <form method="POST" action="/delete_user/{{ user }}" style="display:inline"
+            onsubmit="return confirm('Delete {{ user.replace('_',' ') }}?')">
+        <button type="submit" class="btn-delete">✕</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if today_attendance %}
+<div class="card">
+  <h2>✅ Today's Attendance</h2>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Date</th><th>Time</th></tr></thead>
+    <tbody>
+      {% for row in today_attendance %}
+      <tr>
+        <td>{{ row[0].replace('_', ' ') if row|length > 0 else '' }}</td>
+        <td>{{ row[1] if row|length > 1 else '' }}</td>
+        <td>{{ row[2] if row|length > 2 else '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% endblock %}

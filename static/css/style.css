@@ -1,0 +1,166 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0f0f1a;
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
+/* ── Navbar ── */
+.navbar {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: .9rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-brand { font-size: 1.3rem; font-weight: 700; color: #a78bfa; }
+.nav-links a {
+  color: #94a3b8; text-decoration: none;
+  margin-left: 1.5rem; font-size: .9rem;
+  transition: color .2s;
+}
+.nav-links a:hover { color: #a78bfa; }
+
+/* ── Container ── */
+.container { max-width: 1100px; margin: auto; padding: 2rem 1.5rem; }
+
+/* ── Alerts ── */
+.alert {
+  padding: .85rem 1.2rem; border-radius: 10px;
+  margin-bottom: 1.2rem; font-size: .95rem;
+}
+.alert-success { background: rgba(74,222,128,.15); border: 1px solid #4ade80; color: #4ade80; }
+.alert-error   { background: rgba(248,113,113,.15); border: 1px solid #f87171; color: #f87171; }
+
+/* ── Hero ── */
+.hero { text-align: center; padding: 2.5rem 1rem; }
+.hero h1 { font-size: 2.2rem; font-weight: 700; color: #a78bfa; margin-bottom: .5rem; }
+.hero p  { color: #94a3b8; font-size: 1.1rem; }
+
+/* ── Stats ── */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1rem; margin: 1.5rem 0; }
+.stat-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; padding: 1.5rem; text-align: center;
+}
+.stat-number { font-size: 2rem; font-weight: 700; color: #a78bfa; }
+.stat-label  { color: #94a3b8; font-size: .85rem; margin-top: .3rem; }
+
+/* ── Action Cards ── */
+.actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1rem; margin: 1.5rem 0; }
+.action-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 1.8rem 1.4rem;
+  text-decoration: none; color: #e2e8f0;
+  transition: transform .2s, border-color .2s, background .2s;
+  cursor: pointer;
+}
+.action-card:hover { transform: translateY(-4px); border-color: #a78bfa; background: rgba(167,139,250,.1); }
+.action-icon { font-size: 2.5rem; margin-bottom: .8rem; }
+.action-card h3 { font-size: 1.1rem; margin-bottom: .4rem; }
+.action-card p  { color: #94a3b8; font-size: .85rem; }
+
+/* ── Card ── */
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 1.8rem; margin-bottom: 1.5rem;
+}
+.card h2 { margin-bottom: 1rem; font-size: 1.3rem; }
+
+/* ── Users Grid ── */
+.users-grid { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .5rem; }
+.user-chip {
+  background: rgba(167,139,250,.15);
+  border: 1px solid rgba(167,139,250,.4);
+  border-radius: 50px; padding: .4rem 1rem;
+  display: flex; align-items: center; gap: .5rem; font-size: .9rem;
+}
+.btn-delete {
+  background: transparent; border: none; color: #f87171;
+  cursor: pointer; font-size: 1rem; padding: 0;
+}
+
+/* ── Camera ── */
+.camera-container {
+  position: relative; border-radius: 14px;
+  overflow: hidden; background: #000;
+  border: 2px solid rgba(167,139,250,.4);
+}
+.camera-container video { width: 100%; display: block; }
+.camera-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.face-guide {
+  width: 220px; height: 280px;
+  border: 3px dashed rgba(167,139,250,.7);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { border-color: rgba(167,139,250,.7); }
+  50%      { border-color: rgba(167,139,250,1); box-shadow: 0 0 20px rgba(167,139,250,.5); }
+}
+
+/* ── Forms ── */
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; margin-bottom: .4rem; color: #94a3b8; font-size: .9rem; }
+.form-control {
+  width: 100%; padding: .75rem 1rem;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 10px; color: #e2e8f0;
+  font-size: 1rem; outline: none;
+  transition: border-color .2s;
+}
+.form-control:focus { border-color: #a78bfa; }
+
+/* ── Buttons ── */
+.btn-row { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+.btn {
+  padding: .75rem 1.5rem; border-radius: 10px;
+  font-size: .95rem; font-weight: 600;
+  cursor: pointer; border: none; transition: opacity .2s, transform .15s;
+}
+.btn:hover { opacity: .88; transform: translateY(-1px); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.btn-primary { background: #7c3aed; color: #fff; }
+.btn-success { background: #16a34a; color: #fff; }
+.btn-large   { padding: 1rem 2rem; font-size: 1.05rem; width: 100%; }
+
+/* ── Results ── */
+.results-list { display: flex; flex-direction: column; gap: .7rem; }
+.result-card {
+  padding: 1rem 1.3rem; border-radius: 12px;
+  font-size: 1rem; font-weight: 500;
+}
+.result-success { background: rgba(74,222,128,.15); border: 1px solid #4ade80; color: #4ade80; }
+.result-info    { background: rgba(96,165,250,.15);  border: 1px solid #60a5fa; color: #60a5fa; }
+.result-unknown { background: rgba(251,191,36,.15);  border: 1px solid #fbbf24; color: #fbbf24; }
+.result-error   { background: rgba(248,113,113,.15); border: 1px solid #f87171; color: #f87171; }
+
+/* ── Table ── */
+.table { width: 100%; border-collapse: collapse; margin-top: .5rem; }
+.table th, .table td { padding: .75rem 1rem; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; }
+.table th { color: #a78bfa; font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; }
+.table tbody tr:hover { background: rgba(255,255,255,.04); }
+
+/* ── Spinner ── */
+.spinner {
+  width: 40px; height: 40px;
+  border: 4px solid rgba(167,139,250,.3);
+  border-top-color: #a78bfa;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: .5rem auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
