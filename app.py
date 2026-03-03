@@ -155,14 +155,3 @@ def delete_user(name):
 
 if __name__ == "__main__":
     app.run(debug=True)
-```
-
----
-
-And replace `requirements.txt` with just this (3 lines only):
-```
-flask
-opencv-python-headless==4.8.1.78
-Pillow
-gunicorn
-numpy==1.26.4
