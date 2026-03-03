@@ -1,7 +1,5 @@
 flask
-deepface
 opencv-python-headless==4.8.1.78
-numpy==1.26.4
 Pillow
 gunicorn
-tf-keras
+numpy==1.26.4
