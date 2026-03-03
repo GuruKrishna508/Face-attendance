@@ -14,10 +14,10 @@ from PIL import Image, ExifTags
 app = Flask(__name__)
 app.secret_key = "attendance_secret_key"
 
-KNOWN_FACES_DIR = "known_faces"
-ENCODINGS_FILE  = "encodings.pkl"
-ATTENDANCE_FILE = "attendance.csv"
-
+BASE_DIR        = "/tmp/face_attendance"
+KNOWN_FACES_DIR = os.path.join(BASE_DIR, "known_faces")
+ENCODINGS_FILE  = os.path.join(BASE_DIR, "encodings.pkl")
+ATTENDANCE_FILE = os.path.join(BASE_DIR, "attendance.csv")
 os.makedirs(KNOWN_FACES_DIR, exist_ok=True)
 
 @app.template_filter('enumerate')
