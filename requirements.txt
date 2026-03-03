@@ -1,6 +1,7 @@
 flask
-face-recognition==1.3.0
+deepface
 opencv-python-headless==4.8.1.78
 numpy==1.26.4
 Pillow
 gunicorn
+tf-keras
